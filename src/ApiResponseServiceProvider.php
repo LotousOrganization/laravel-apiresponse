@@ -1,6 +1,6 @@
 <?php
 
-namespace SobhanAali\LaravelRepoControllerGenerator;
+namespace SobhanAali\ApiResponse;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Debug\ExceptionHandler;
