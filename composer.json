@@ -1,0 +1,32 @@
+{
+    "name": "sobhan-aali/laravel-apiresponse",
+    "description": "A Laravel package to standardize JSON API responses",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "SobhanAali\\LaravelApiresponse\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sobhan Aali",
+            "email": "sobhanaali80@gmail.com"
+        }
+    ],
+    "require": {
+        "illuminate/support": "*"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SobhanAali\\ApiResponse\\ApiResponseServiceProvider"
+            ],
+            "aliases": {
+                "ApiResponse": "SobhanAali\\ApiResponse\\Facades\\ApiResponse"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
