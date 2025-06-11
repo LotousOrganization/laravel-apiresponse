@@ -1,6 +1,6 @@
 {
     "name": "sobhan-aali/laravel-apiresponse",
-    "description": "A Laravel package to standardize JSON API responses",
+    "description": "A Laravel package to standardize JSON API responses and centralize exception handling",
     "type": "library",
     "license": "MIT",
     "autoload": {
