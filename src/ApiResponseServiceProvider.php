@@ -3,53 +3,58 @@
 namespace SobhanAali\ApiResponse;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Foundation\Bootstrap\Exceptions;
+use Throwable;
 
 class ApiResponseServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        // Bind class if needed (e.g. singleton for facade)
+        //
     }
 
     public function boot()
     {
-        $this->extendExceptionHandler();
-        $this->copyApiResponseStub();
+        app()->booted(function () {
+            $this->extendExceptionHandler();
+            $this->copyApiResponseStub();
+        });
     }
 
     protected function extendExceptionHandler()
     {
-        app(ExceptionHandler::class)->renderable(function (\Throwable $exception, $request) {
+        $exceptions = app(Exceptions::class);
 
-            if ($request->expectsJson() || $request->is('api/*')) {
+        $exceptions->renderable(function (Throwable $exception, $request) {
 
-                if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-                    return \App\Responses\ApiResponse::notFound('Record not found.');
-                }
-
-                if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-                    && $exception->getPrevious() instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-                    return \App\Responses\ApiResponse::notFound('Record not found.');
-                }
-
-                if ($exception instanceof \Illuminate\Validation\ValidationException) {
-                    $firstError = collect($exception->errors())->flatten()->first();
-                    return \App\Responses\ApiResponse::validationError($firstError,$exception->errors());
-                }
-
-                if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
-                    return \App\Responses\ApiResponse::unauthorized();
-                }
-
-                if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
-                    return \App\Responses\ApiResponse::forbidden('You do not have permission to perform this action.', 403);
-                }
-
-                $statusCode = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500;
-                return \App\Responses\ApiResponse::error($exception->getMessage() ?: 'Server error.', $statusCode);
+            if (! ($request->expectsJson() || $request->is('api/*'))) {
+                return null;
             }
 
+            if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                return \App\Responses\ApiResponse::notFound('Record not found.');
+            }
+
+            if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+                && $exception->getPrevious() instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                return \App\Responses\ApiResponse::notFound('Record not found.');
+            }
+
+            if ($exception instanceof \Illuminate\Validation\ValidationException) {
+                $firstError = collect($exception->errors())->flatten()->first();
+                return \App\Responses\ApiResponse::validationError($firstError, 422, $exception->errors());
+            }
+
+            if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+                return \App\Responses\ApiResponse::unauthorized();
+            }
+
+            if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+                return \App\Responses\ApiResponse::forbidden('You do not have permission to perform this action.', 403);
+            }
+
+            $statusCode = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500;
+            return \App\Responses\ApiResponse::error($exception->getMessage() ?: 'Server error.', $statusCode);
         });
     }
 
