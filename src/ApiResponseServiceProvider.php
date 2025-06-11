@@ -64,7 +64,7 @@ class ApiResponseServiceProvider extends ServiceProvider
 
     protected function createStub($destination)
     {
-        $stubPath = __DIR__ . '/../stubs/ApiResponse.stub';
+        $stubPath = __DIR__ . '/stubs/ApiResponse.stub';
 
         if (!file_exists(dirname($destination))) {
             mkdir(dirname($destination), 0755, true);
