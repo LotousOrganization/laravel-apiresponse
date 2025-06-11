@@ -23,53 +23,25 @@ class ApiResponseServiceProvider extends ServiceProvider
 
     protected function extendExceptionHandler()
     {
-        $exceptions = app(Exceptions::class);
+        $destination = base_path('Traits/Exceptions.php');
 
-        $exceptions->renderable(function (Throwable $exception, $request) {
-
-            if (! ($request->expectsJson() || $request->is('api/*'))) {
-                return null;
-            }
-
-            if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-                return \App\Responses\ApiResponse::notFound('Record not found.');
-            }
-
-            if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-                && $exception->getPrevious() instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-                return \App\Responses\ApiResponse::notFound('Record not found.');
-            }
-
-            if ($exception instanceof \Illuminate\Validation\ValidationException) {
-                $firstError = collect($exception->errors())->flatten()->first();
-                return \App\Responses\ApiResponse::validationError($firstError, 422, $exception->errors());
-            }
-
-            if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
-                return \App\Responses\ApiResponse::unauthorized();
-            }
-
-            if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
-                return \App\Responses\ApiResponse::forbidden('You do not have permission to perform this action.', 403);
-            }
-
-            $statusCode = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500;
-            return \App\Responses\ApiResponse::error($exception->getMessage() ?: 'Server error.', $statusCode);
-        });
+        if (!file_exists($destination)) {
+            $this->createStub($destination , 'Exceptions');
+        }
     }
 
     protected function copyApiResponseStub()
     {
-        $destination = app_path('Responses/ApiResponse.php');
+        $destination = base_path('Responses/ApiResponse.php');
 
         if (!file_exists($destination)) {
-            $this->createStub($destination);
+            $this->createStub($destination , 'ApiResponse');
         }
     }
 
-    protected function createStub($destination)
+    protected function createStub($destination , $stub)
     {
-        $stubPath = __DIR__ . '/stubs/ApiResponse.stub';
+        $stubPath = __DIR__ . '/stubs/'.$stub.'.stub';
 
         if (!file_exists(dirname($destination))) {
             mkdir(dirname($destination), 0755, true);
