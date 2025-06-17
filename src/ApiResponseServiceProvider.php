@@ -3,8 +3,6 @@
 namespace SobhanAali\ApiResponse;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\Bootstrap\Exceptions;
-use Throwable;
 
 class ApiResponseServiceProvider extends ServiceProvider
 {
@@ -23,7 +21,7 @@ class ApiResponseServiceProvider extends ServiceProvider
 
     protected function extendExceptionHandler()
     {
-        $destination = base_path('Traits/Exceptions.php');
+        $destination = app_path('Helpers/Exceptions.php');
 
         if (!file_exists($destination)) {
             $this->createStub($destination , 'Exceptions');

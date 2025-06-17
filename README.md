@@ -39,10 +39,7 @@ Add the following code to your `bootstrap/app.php` file to automatically handle 
 use Traits\Exceptions;
 
 $app->withExceptions(function ($exceptions) {
-    $handler = new class {
-        use Exceptions;
-    };
-
+    
     $exceptions->renderable(function (Throwable $exception, $request) use ($handler) {
         return $handler->render($exception, $request);
     });

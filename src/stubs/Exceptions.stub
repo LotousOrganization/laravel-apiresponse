@@ -5,9 +5,9 @@ namespace Traits;
 use Throwable;
 use Illuminate\Http\Request;
 
-trait Exceptions
+class Exceptions
 {
-    public function render(Throwable $exception, Request $request)
+    public static function render(Throwable $exception, Request $request)
     {
         if (! ($request->expectsJson() || $request->is('api/*'))) {
             return null;
