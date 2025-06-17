@@ -36,12 +36,12 @@ Two files will be automatically created for you to customize:
 Add the following code to your `bootstrap/app.php` file to automatically handle exceptions using the package’s trait:
 
 ```php
-use Traits\Exceptions;
+use App\Helpers\Exceptions;
 
 $app->withExceptions(function ($exceptions) {
     
     $exceptions->renderable(function (Throwable $exception, $request) use ($handler) {
-        return $handler->render($exception, $request);
+        return Exceptions::render($exception, $request);
     });
 });
 ```
