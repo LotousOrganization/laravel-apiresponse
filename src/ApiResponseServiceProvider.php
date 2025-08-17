@@ -30,7 +30,7 @@ class ApiResponseServiceProvider extends ServiceProvider
 
     protected function copyApiResponseStub()
     {
-        $destination = base_path('Responses/ApiResponse.php');
+        $destination = app_path('Responses/ApiResponse.php');
 
         if (!file_exists($destination)) {
             $this->createStub($destination , 'ApiResponse');
