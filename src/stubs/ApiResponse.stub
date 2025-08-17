@@ -35,7 +35,7 @@ class ApiResponse
     }
 
 
-    public static function sendResponse(bool $success, string $message, array $data, int $statusCode)
+    public static function sendResponse(bool $success, string $message, $data, int $statusCode)
     {
         return response()->json(
             array_merge([
